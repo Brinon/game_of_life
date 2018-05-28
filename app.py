@@ -43,7 +43,6 @@ class App:
 
     self.ui = UI(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.NUM_COLS, self.NUM_ROWS, self.game)
 
-
   def draw(self):
     self.ui.draw()
 
@@ -59,14 +58,13 @@ class App:
         if event.key == Q or event.key == ESC:
           self.running = False
         if event.key == SP:
-          self.self = True
+          self.step = True
         if event.key == A:
           self.autoplay = not self.autoplay
 
       if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_position = pygame.mouse.get_pos()
-        row = int(mouse_position[0] / self.ui.cell_width)
-        col = int(mouse_position[1] / self.ui.cell_height)
+        row, col = self.ui.position_to_cell(mouse_position)
         self.game.toggle((row, col))
 
   def main_loop(self):

@@ -17,6 +17,9 @@ class UI:
 
     self.screen = pygame.display.set_mode((self.width, self.height))
 
+    board_height = int(0.85 * self.height)
+    scores_height = self.height - board_height
+
     self.cell_width = self.width / self.num_cols
     self.cell_height = self.height / self.num_rows
 
@@ -26,9 +29,22 @@ class UI:
     inactive_rect.fill((128, 128, 128))
     self.surface_by_class = {0: inactive_rect, 1: active_rect}
 
+
+    board_height = int(0.85 * self.height)
+    scores_height = self.height - board_height
+    # game_surf = Surface()
+    # scores_surt = Surface()
+
   def current_cell_surface(self, position):
     return self.surface_by_class[self.game.mat[position]]
-
+  
+  def position_to_cell(self, position):
+    """ return the coordinates of the current cell inside the matrix given a mouse
+    pixel position """
+    row = int(position[0] / self.cell_width)
+    col = int(position[1] / self.cell_height)
+    return row, col
+    
   def draw(self):
     self.screen.fill((255, 255, 255))
     for i in range(self.num_rows):
