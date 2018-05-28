@@ -81,6 +81,12 @@ class App:
         if event.key == A:
           self.autoplay = not self.autoplay
 
+      if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_position = pygame.mouse.get_pos()
+        row = int(mouse_position[0] / self.cell_width)
+        col = int(mouse_position[1] / self.cell_height)
+        self.game.toggle((row, col))
+
   def main_loop(self):
     self.running = True
     self.autoplay = False
@@ -91,6 +97,7 @@ class App:
       self.update()
       self.draw()
       self.step = False
+      self.clock.tick(20)
 
 
 if __name__ == '__main__':
