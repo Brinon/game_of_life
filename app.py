@@ -5,6 +5,7 @@ import pygame
 from pygame import Surface, Rect
 
 from game_of_life import GameOfLife
+from ui import UI
 
 # Aliases for keyboard keys
 Q = pygame.K_q
@@ -33,18 +34,6 @@ class App:
     # load and set the logo
     pygame.display.set_caption(self.TITLE)
 
-    # create a surface on screen that has the size of 240 x 180
-    self.screen = pygame.display.set_mode((self.SCREEN_WIDTH, self.SCREEN_HEIGHT))
-
-    self.cell_width = self.SCREEN_WIDTH / self.NUM_COLS
-    self.cell_height = self.SCREEN_HEIGHT / self.NUM_ROWS
-
-    active_rect = Surface((self.cell_width, self.cell_height))
-    active_rect.fill((255, 0, 0))
-    inactive_rect = Surface((self.cell_width, self.cell_height))
-    inactive_rect.fill((128, 128, 128))
-    self.surface_by_class = {0: inactive_rect, 1: active_rect}
-
     if initial_active_file:
       with open(args.f, 'r') as f:
         initial_active = json.load(f)
@@ -52,18 +41,11 @@ class App:
       initial_active = None
     self.game = GameOfLife(self.NUM_ROWS, self.NUM_COLS, initial_active=initial_active)
 
-  def current_cell_surface(self, position):
-    return self.surface_by_class[self.game.mat[position]]
+    self.ui = UI(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.NUM_COLS, self.NUM_ROWS, self.game)
+
 
   def draw(self):
-    self.screen.fill((255, 255, 255))
-    for i in range(self.NUM_ROWS):
-      for j in range(self.NUM_COLS):
-        current_cell_rect = Rect((i * self.cell_width, j * self.cell_height),
-                                 (self.cell_width, self.cell_height))
-        self.screen.blit(self.current_cell_surface((i, j)), current_cell_rect)
-
-    pygame.display.flip()
+    self.ui.draw()
 
   def update(self):
     if self.autoplay or self.step:
@@ -83,8 +65,8 @@ class App:
 
       if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_position = pygame.mouse.get_pos()
-        row = int(mouse_position[0] / self.cell_width)
-        col = int(mouse_position[1] / self.cell_height)
+        row = int(mouse_position[0] / self.ui.cell_width)
+        col = int(mouse_position[1] / self.ui.cell_height)
         self.game.toggle((row, col))
 
   def main_loop(self):
