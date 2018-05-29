@@ -91,3 +91,42 @@ class GameOfLife:
 
   def toggle(self, position: Tuple[int, int]) -> None:
     self.mat[position] = 1 - self.mat[position]
+
+
+class GameOfLifeHighLife(GameOfLife):
+  """ Variant of game of life where additionallt ro rhe common rules a inactive cell becomes active
+  if it is sorrounded by 6 active cells
+  """
+
+  def step(self) -> List[Tuple[int, int]]:
+    """ Updates the cell matrix
+    Rules:
+      For a space that is 'populated':
+        Each cell with one or no neighbors dies, as if by solitude.
+        Each cell with four or more neighbors dies, as if by overpopulation.
+        Each cell with two or three neighbors survives.
+      For a space that is 'empty' or 'unpopulated'
+        Each cell with three or six neighbors becomes populated.
+
+    Returns list of positions that switched this step
+    """
+    changed = []
+    new_mat = np.zeros_like(self.mat)
+    for i in range(self.num_cols):
+      for j in range(self.num_rows):
+        neighbors = self.active_neighbors((i, j))
+        if self.mat[i, j]:
+          if len(neighbors) in [2, 3]:
+            new_mat[i, j] = 1
+          else:
+            new_mat[i, j] = 0
+            changed.append((i, j))
+        else:
+          if len(neighbors) in [3, 6]:
+            new_mat[i, j] = 1
+            changed.append((i, j))
+          else:
+            new_mat[i, j] = 0
+    self.mat = new_mat
+    self.steps += 1
+    return changed

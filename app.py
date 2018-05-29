@@ -4,7 +4,7 @@ import json
 import pygame
 from pygame import Surface, Rect
 
-from game_of_life import GameOfLife
+from game_of_life import GameOfLife, GameOfLifeHighLife
 from ui import UI
 
 # Aliases for keyboard keys
@@ -28,7 +28,7 @@ class App:
 
   TITLE = "Game of Life"
 
-  def __init__(self, initial_active_file=None):
+  def __init__(self, initial_active_file=None, mode='game_of_life'):
     pygame.init()
     self.clock = pygame.time.Clock()
     # load and set the logo
@@ -39,7 +39,14 @@ class App:
         initial_active = json.load(f)
     else:
       initial_active = None
-    self.game = GameOfLife(self.NUM_ROWS, self.NUM_COLS, initial_active=initial_active)
+
+    print('Game mode is: ', mode)
+    if mode == 'game_of_life':
+      self.game = GameOfLife(self.NUM_ROWS, self.NUM_COLS, initial_active=initial_active)
+    elif mode == 'high_life':
+      self.game = GameOfLifeHighLife(self.NUM_ROWS, self.NUM_COLS, initial_active=initial_active)
+    else:
+      raise Exception('Unknown game mode: {}'.format(mode))
 
     self.ui = UI(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.NUM_COLS, self.NUM_ROWS, self.game)
 
@@ -83,6 +90,7 @@ class App:
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-f', nargs='?', default=None)
+  parser.add_argument('-m', default='game_of_life')
   args = parser.parse_args()
-  app = App(initial_active_file=args.f)
+  app = App(initial_active_file=args.f, mode=args.m)
   app.main_loop()
