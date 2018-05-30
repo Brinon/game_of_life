@@ -22,15 +22,26 @@ R = pygame.K_r
 class App:
   """ Game of life pygame app """
 
-  SCREEN_WIDTH = 600
-  SCREEN_HEIGHT = 600
+  DEFAULT_WINDOW_WIDTH = 600
+  DEFAULT_WINDOW_HEIGHT = 600
 
-  NUM_ROWS = 100
-  NUM_COLS = 100
+  DEFAULT_NUM_ROWS = 100
+  DEFAULT_NUM_COLS = 100
 
   TITLE = "Game of Life"
 
-  def __init__(self, initial_active_file=None, mode='game_of_life'):
+  def __init__(self, size=None, window_size=None, initial_active_file=None, mode='game_of_life'):
+    """
+    args:
+      size: number of rows and columns in the matrix
+      initial_active_file: json file to load the state of the matrix from
+      mode: str, 'game_of_life' or 'high_life', game mode
+    """
+    num_cols, num_rows = size or [self.DEFAULT_NUM_ROWS, self.DEFAULT_NUM_COLS]
+    window_width, window_heigth = window_size or [
+        self.DEFAULT_WINDOW_WIDTH, self.DEFAULT_WINDOW_HEIGHT
+    ]
+
     pygame.init()
     self.clock = pygame.time.Clock()
     # load and set the logo
@@ -38,18 +49,19 @@ class App:
 
     if initial_active_file:
       with open(args.f, 'r') as f:
-        initial_active = json.load(f)
-      self.game = GameOfLife.load(initial_active)
+        save_obj = json.load(f)
+      self.game = GameOfLife.load(save_obj)
+      num_cols, num_rows = self.game.size
     else:
       print('Game mode is: ', mode)
       if mode == 'game_of_life':
-        self.game = GameOfLife(self.NUM_ROWS, self.NUM_COLS)
+        self.game = GameOfLife(num_rows, num_cols)
       elif mode == 'high_life':
-        self.game = GameOfLifeHighLife(self.NUM_ROWS, self.NUM_COLS)
+        self.game = GameOfLifeHighLife(num_rows, num_cols)
       else:
         raise Exception('Unknown game mode: {}'.format(mode))
 
-    self.ui = UI(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.NUM_COLS, self.NUM_ROWS, self.game)
+    self.ui = UI(window_width, window_heigth, num_cols, num_rows, self.game)
 
   def draw(self):
     self.ui.draw()
@@ -115,6 +127,8 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-f', nargs='?', default=None)
   parser.add_argument('-m', default='game_of_life')
+  parser.add_argument('-s', nargs=2, type=int)
+  parser.add_argument('-ws', nargs=2, type=int)
   args = parser.parse_args()
-  app = App(initial_active_file=args.f, mode=args.m)
+  app = App(initial_active_file=args.f, mode=args.m, size=args.s, window_size=args.ws)
   app.main_loop()

@@ -1,7 +1,7 @@
 # Game of Life
 python implementation of Conway's Game of Life. Tested on python 3.6
 
-![alt text](https://github.com/Brinon/game_of_life/blob/master/demos/long_thing_demo.gif)
+![alt text](https://github.com/Brinon/game_of_life/blob/master/demos/small_demo.gif)
 
 The game consist in a matrix of cells that can be either activate or inactive. Each step cells update by the following rules:
 
@@ -13,8 +13,9 @@ The game consist in a matrix of cells that can be either activate or inactive. E
   - Each cell with active three neighbors becomes active.
 
 Usage:
+
 ```
-pythonw app.py
+pythonw app.py -s NUM_ROWS NUM_COLUMNS -ws WINDOW_WIDHT WINDOW_HEIGTH
 pythonw app.py -f /path/to/file.json # initiallices from a previously saved state 
 ```
 

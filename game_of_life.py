@@ -96,10 +96,14 @@ class GameOfLife:
   def restart(self):
     self.mat = np.zeros_like(self.mat)
 
+  @property
+  def size(self):
+    return self.mat.shape
+
   def save(self, fpath):
     """ Serializes the game as a JSON file, containing the step number and the activated cells """
     payload = {
-        "size": self.mat.shape,
+        "size": self.size,
         "step": self.steps,
         "active_cells": [x for x in zip(*np.where(self.mat == 1))]
     }
