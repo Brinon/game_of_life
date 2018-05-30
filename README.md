@@ -1,10 +1,7 @@
 # Game of Life
-
-![alt text](https://raw.githubusercontent.com/Brinon/game_of_life/blob/master/demos/long_thing_demo.gif)
+python implementation of Conway's Game of Life. Tested on python 3.6
 
 ![alt text](https://github.com/Brinon/game_of_life/blob/master/demos/long_thing_demo.gif)
-
-python implementation of Conway's Game of Life. Tested on python 3.6
 
 The game consist in a matrix of cells that can be either activate or inactive. Each step cells update by the following rules:
 
@@ -33,3 +30,11 @@ You can toggle the state of a cell clicking on it.
 # Requirements
 * pygame
 * numpy
+
+# Cool demos
+
+## Oscillators
+![alt text](https://github.com/Brinon/game_of_life/blob/master/demos/oscillators_demo.gif)
+
+## Long thing
+![alt text](https://github.com/Brinon/game_of_life/blob/master/demos/long_thing_demo.gif)
