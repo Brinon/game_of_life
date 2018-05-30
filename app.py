@@ -1,3 +1,4 @@
+import datetime
 import argparse
 import json
 
@@ -15,6 +16,7 @@ W = pygame.K_w
 A = pygame.K_a
 S = pygame.K_s
 D = pygame.K_d
+R = pygame.K_r
 
 
 class App:
@@ -37,16 +39,15 @@ class App:
     if initial_active_file:
       with open(args.f, 'r') as f:
         initial_active = json.load(f)
+      self.game = GameOfLife.load(initial_active)
     else:
-      initial_active = None
-
-    print('Game mode is: ', mode)
-    if mode == 'game_of_life':
-      self.game = GameOfLife(self.NUM_ROWS, self.NUM_COLS, initial_active=initial_active)
-    elif mode == 'high_life':
-      self.game = GameOfLifeHighLife(self.NUM_ROWS, self.NUM_COLS, initial_active=initial_active)
-    else:
-      raise Exception('Unknown game mode: {}'.format(mode))
+      print('Game mode is: ', mode)
+      if mode == 'game_of_life':
+        self.game = GameOfLife(self.NUM_ROWS, self.NUM_COLS)
+      elif mode == 'high_life':
+        self.game = GameOfLifeHighLife(self.NUM_ROWS, self.NUM_COLS)
+      else:
+        raise Exception('Unknown game mode: {}'.format(mode))
 
     self.ui = UI(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.NUM_COLS, self.NUM_ROWS, self.game)
 
@@ -56,6 +57,25 @@ class App:
   def update(self):
     if self.autoplay or self.step:
       self.game.step()
+
+  def save_game(self):
+    """ Saves a json containing the game state in a json file called 'game_of_life_dd_mm_yy_hh_mm_ss.json'
+    """
+    now = datetime.datetime.now()
+    save_fpath = 'game_of_life_{day}_{month}_{year}_{hour}_{minute}_{second}.json'.format(
+        day=now.day,
+        month=now.month,
+        year=now.year,
+        hour=now.hour,
+        minute=now.minute,
+        second=now.second,
+    )
+    try:
+      print('saving game as: ', save_fpath)
+      self.game.save(save_fpath)
+      print('saved correctly')
+    except Exception as e:
+      print('error saving game: {}'.format(e))
 
   def handle_input(self):
     for event in pygame.event.get():
@@ -68,6 +88,10 @@ class App:
           self.step = True
         if event.key == A:
           self.autoplay = not self.autoplay
+        if event.key == S:
+          self.save_game()
+        if event.key == R:
+          self.game.restart()
 
       if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_position = pygame.mouse.get_pos()

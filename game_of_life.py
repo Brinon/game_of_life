@@ -1,5 +1,6 @@
-import numpy as np
+import json
 from typing import List, Tuple
+import numpy as np
 
 # from a cell to an adjacent one
 MOVES = [
@@ -91,6 +92,32 @@ class GameOfLife:
 
   def toggle(self, position: Tuple[int, int]) -> None:
     self.mat[position] = 1 - self.mat[position]
+
+  def restart(self):
+    self.mat = np.zeros_like(self.mat)
+
+  def save(self, fpath):
+    """ Serializes the game as a JSON file, containing the step number and the activated cells """
+    payload = {
+        "size": self.mat.shape,
+        "step": self.steps,
+        "active_cells": [x for x in zip(*np.where(self.mat == 1))]
+    }
+
+    # HACK: np.int64 cause problems serializing
+    def default(o):
+      if isinstance(o, np.int64):
+        return int(o)
+      raise TypeError
+
+    with open(fpath, 'w') as f:
+      f.write(json.dumps(payload, default=default))
+
+  @classmethod
+  def load(cls, json_obj):
+    game = cls(json_obj['size'][0], json_obj['size'][1], initial_active=json_obj["active_cells"])
+    game.steps = json_obj["step"]
+    return game
 
 
 class GameOfLifeHighLife(GameOfLife):
