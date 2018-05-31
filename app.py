@@ -115,9 +115,14 @@ class App:
 
       if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_position = pygame.mouse.get_pos()
-        row, col = self.ui.position_to_cell(mouse_position)
-        self.game.toggle((row, col))
-        self.changed_cells.append((row, col))
+        window_surf = self.ui.position_to_surf(mouse_position)
+        print('clicked on: {} -> {} '.format(mouse_position, window_surf))
+        if window_surf == "game":
+          row, col = self.ui.position_to_cell(mouse_position)
+          self.game.toggle((row, col))
+          self.changed_cells.append((row, col))
+        elif window_surf == "score":
+          pass
 
   def main_loop(self):
     self.running = True
