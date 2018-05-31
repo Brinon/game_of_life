@@ -1,3 +1,8 @@
+import os
+
+import tkinter as tk
+from tkinter import *
+
 import pygame
 from pygame import Rect, Surface
 
@@ -15,6 +20,17 @@ class UI:
     self.num_rows = num_rows
     self.game = game
 
+    self.root = tk.Tk()
+    embed = tk.Frame(self.root, width=self.width, height=self.height)
+    embed.grid(columnspan=(600), rowspan=500)  # Adds grid
+    embed.pack(side=LEFT)  #packs window to the left
+    self.btn_step = tk.Frame(self.root, width=75, height=500)
+    self.btn_step.pack(side=LEFT)
+    os.environ['SDL_WINDOWID'] = str(embed.winfo_id())
+    os.environ['SDL_VIDEODRIVER'] = 'windib'
+
+    pygame.display.init()
+    pygame.display.update()
     self.screen = pygame.display.set_mode((self.width, self.height))
 
     board_height = int(0.85 * self.height)
@@ -59,3 +75,7 @@ class UI:
       )
       self.screen.blit(self.current_cell_surface((i, j)), current_cell_rect)
     pygame.display.flip()
+    pygame.display.update()
+    button1 = Button(self.btn_step, text='Draw')
+    button1.pack(side=LEFT)
+    self.root.update()
