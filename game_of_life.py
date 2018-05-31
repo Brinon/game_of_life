@@ -3,16 +3,7 @@ from typing import List, Tuple
 import numpy as np
 
 # from a cell to an adjacent one
-MOVES = [
-    (0, 1),
-    (0, -1),
-    (1, 0),
-    (1, 1),
-    (1, -1),
-    (-1, 0),
-    (-1, 1),
-    (-1, -1),
-]
+MOVES = [(0, 1), (0, -1), (1, 0), (1, 1), (1, -1), (-1, 0), (-1, 1), (-1, -1)]
 
 
 class GameOfLifeException(Exception):
@@ -34,7 +25,7 @@ class GameOfLife:
 
     for p in initial_active:
       if len(p) != 2:
-        raise GameOfLifeException('Received bad initial positon: {}'.format(p))
+        raise GameOfLifeException("Received bad initial positon: {}".format(p))
       i, j = p
       self.mat[i, j] = 1
 
@@ -78,9 +69,8 @@ class GameOfLife:
     for (mi, mj) in MOVES:
       current_position_i = i + mi
       current_position_j = j + mj
-      if 0 <= current_position_i < self.num_cols and \
-          0 <= current_position_j < self.num_rows and \
-          self.mat[current_position_i, current_position_j] == 1:
+      if (0 <= current_position_i < self.num_cols and 0 <= current_position_j < self.num_rows and
+          self.mat[current_position_i, current_position_j] == 1):
         neighbors.append((current_position_i, current_position_j))
     return neighbors
 
@@ -105,7 +95,7 @@ class GameOfLife:
     payload = {
         "size": self.size,
         "step": self.steps,
-        "active_cells": [x for x in zip(*np.where(self.mat == 1))]
+        "active_cells": [x for x in zip(*np.where(self.mat == 1))],
     }
 
     # HACK: np.int64 cause problems serializing
@@ -114,12 +104,16 @@ class GameOfLife:
         return int(o)
       raise TypeError
 
-    with open(fpath, 'w') as f:
+    with open(fpath, "w") as f:
       f.write(json.dumps(payload, default=default))
 
   @classmethod
   def load(cls, json_obj):
-    game = cls(json_obj['size'][0], json_obj['size'][1], initial_active=json_obj["active_cells"])
+    game = cls(
+        json_obj["size"][0],
+        json_obj["size"][1],
+        initial_active=json_obj["active_cells"],
+    )
     game.steps = json_obj["step"]
     return game
 
