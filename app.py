@@ -112,6 +112,7 @@ class App:
           self.save_game()
         if event.key == R:
           self.game.restart()
+          self.ui.draw(None)
 
       if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_position = pygame.mouse.get_pos()
@@ -137,6 +138,8 @@ class App:
       self.update()
 
       self.draw()
+
+      self.clock.tick(30)
       self.step = False
 
     pygame.quit()

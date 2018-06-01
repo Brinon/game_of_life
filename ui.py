@@ -111,3 +111,19 @@ class UI:
                      Rect((self.OFFSET_LEFT, self.OFFSET_TOP + self.width + self.OFFSET_CENTER),
                           (self.width, self.SCORES_HEIGHT)))
     pygame.display.flip()
+
+
+class UIComponent(Surface):
+  """ Component in the UI 
+  """
+
+  def __init__(self, ui_rect, *args, **kwargs):
+    """
+    Args:
+      ui_rect: Rect indicating where in the ui window this component is placed
+    """
+    super().__init__(*args, **kwargs)
+    self.ui_rect = ui_rect
+
+  def draw(self):
+    raise NotImplementedError
