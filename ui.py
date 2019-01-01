@@ -15,6 +15,7 @@ Layout of the UI
 """
 
 
+
 class UIError(Exception):
   pass
 
@@ -56,6 +57,10 @@ class UI:
     inactive_rect.fill((128, 128, 128))
     self.surface_by_class = {0: inactive_rect, 1: active_rect}
 
+    self.score_font = pygame.font.Font("fonts/XPED.ttf", 26)
+    if not self.score_font:
+      raise UIError("Could not init font!")
+
   def current_cell_surface(self, position):
     return self.surface_by_class[self.game.mat[position]]
 
@@ -88,7 +93,7 @@ class UI:
     # inside the game
     return row, col
 
-  def draw(self, changed_cells=None):
+  def draw(self, changed_cells=None, score=0):
     """
     if changed_cells is None then paint all cells
     """
@@ -104,12 +109,18 @@ class UI:
       )
       self.game_screen.blit(self.current_cell_surface((i, j)), current_cell_rect)
 
+    # draw score into self.scores
+    score_text = self.score_font.render(f"Score: {score}", True, (0, 128, 0))
+    self.scores.blit(score_text,
+                     0,0)
+
     # draw game and scores into main screen
     self.screen.blit(self.game_screen,
                      Rect((self.OFFSET_LEFT, self.OFFSET_TOP), (self.width, self.height)))
-    self.screen.blit(self.scores,
-                     Rect((self.OFFSET_LEFT, self.OFFSET_TOP + self.width + self.OFFSET_CENTER),
-                          (self.width, self.SCORES_HEIGHT)))
+    self.screen.blit(
+        self.scores,
+        Rect((self.OFFSET_LEFT, self.OFFSET_TOP + self.width + self.OFFSET_CENTER),
+             (self.width, self.SCORES_HEIGHT)))
     pygame.display.flip()
 
 
