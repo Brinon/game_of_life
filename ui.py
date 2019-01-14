@@ -1,5 +1,9 @@
+from typing import Tuple
 import pygame
 from pygame import Rect, Surface
+from rtree import index
+
+from .util import IdGenerator
 """
 Layout of the UI
  ____________
@@ -13,6 +17,8 @@ Layout of the UI
 |____________|
 
 """
+
+componentd_ids_generator = IdGenerator()
 
 
 class UIError(Exception):
@@ -44,6 +50,11 @@ class UI:
         self.OFFSET_TOP + self.height + self.OFFSET_CENTER + self.SCORES_HEIGHT +
         self.OFFSET_BOTTOM)
     self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
+
+    # spatiall index to contain the components
+    self.components_tree = index.Index()
+    components_id = {}
+
     self.game_screen = Surface((self.width, self.height))
     self.scores = Surface((self.width, self.SCORES_HEIGHT))
 
@@ -110,9 +121,7 @@ class UI:
 
     # draw score into self.scores
     score_text = self.score_font.render(f"Score: {score}", True, (0, 128, 0))
-    self.scores.blit(score_text, 
-                     Rect((0,0), (10,10))
-                     )
+    self.scores.blit(score_text, Rect((0, 0), (10, 10)))
 
     # draw game and scores into main screen
     self.screen.blit(self.game_screen,
@@ -126,15 +135,25 @@ class UI:
 
 class UIComponent(Surface):
   """ Component in the UI 
+  attributes:
+    
   """
 
-  def __init__(self, ui_rect, *args, **kwargs):
+  def __init__(self, size: Tuple[int, int], position: Tuple[int, int], parent_component: 'Surface',
+               name: str, *args, **kwargs):
     """
     Args:
       ui_rect: Rect indicating where in the ui window this component is placed
     """
-    super().__init__(*args, **kwargs)
-    self.ui_rect = ui_rect
+    super().__init__(size, *args, **kwargs)
+    left, top = position
+    width, height = size
+    self.rect = Rect(left, top, width, height)
+    self.id = componentd_ids_generator.next_id()
+    self.parent_component = parent_component
 
   def draw(self):
-    raise NotImplementedError
+    self.
+
+  def update(self):
+    pass
