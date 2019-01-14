@@ -70,7 +70,7 @@ class App:
       self.ui.draw(None)
     else:
       # self.ui.draw(None)
-      self.ui.draw(self.changed_cells)
+      self.ui.draw(self.changed_cells, score=self.game.score)
 
   def update(self):
     """ Update the cell matrix 

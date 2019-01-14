@@ -29,6 +29,11 @@ class GameOfLife:
       i, j = p
       self.mat[i, j] = 1
 
+  @property
+  def score(self):
+    """ current score of the game, number of active cells in the board """
+    return np.sum(self.mat)
+
   def step(self) -> List[Tuple[int, int]]:
     """ Updates the cell matrix
     Rules:

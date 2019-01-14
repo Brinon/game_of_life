@@ -15,7 +15,6 @@ Layout of the UI
 """
 
 
-
 class UIError(Exception):
   pass
 
@@ -111,8 +110,9 @@ class UI:
 
     # draw score into self.scores
     score_text = self.score_font.render(f"Score: {score}", True, (0, 128, 0))
-    self.scores.blit(score_text,
-                     0,0)
+    self.scores.blit(score_text, 
+                     Rect((0,0), (10,10))
+                     )
 
     # draw game and scores into main screen
     self.screen.blit(self.game_screen,
