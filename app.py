@@ -139,7 +139,7 @@ class App:
 
       self.draw()
 
-      self.clock.tick(30)
+      self.clock.tick(10)
       self.step = False
 
     pygame.quit()

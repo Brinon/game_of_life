@@ -3,7 +3,7 @@ import pygame
 from pygame import Rect, Surface
 from rtree import index
 
-from .util import IdGenerator
+from util import IdGenerator
 """
 Layout of the UI
  ____________
@@ -57,15 +57,6 @@ class UI:
 
     self.game_screen = Surface((self.width, self.height))
     self.scores = Surface((self.width, self.SCORES_HEIGHT))
-
-    self.cell_width = self.width / self.num_cols
-    self.cell_height = self.height / self.num_rows
-
-    active_rect = Surface((self.cell_width, self.cell_height))
-    active_rect.fill((255, 0, 0))
-    inactive_rect = Surface((self.cell_width, self.cell_height))
-    inactive_rect.fill((128, 128, 128))
-    self.surface_by_class = {0: inactive_rect, 1: active_rect}
 
     self.score_font = pygame.font.Font("fonts/XPED.ttf", 26)
     if not self.score_font:
@@ -147,13 +138,37 @@ class UIComponent(Surface):
     """
     super().__init__(size, *args, **kwargs)
     left, top = position
-    width, height = size
+    self.width, self.height = size
     self.rect = Rect(left, top, width, height)
     self.id = componentd_ids_generator.next_id()
     self.parent_component = parent_component
 
+  @property
+  def size(self):
+    return self.rect.width, self.rect.height
+
   def draw(self):
-    self.
+    pass
 
   def update(self):
+    pass
+
+
+class GameComponent(UIComponent):
+
+  def __init__(self, game):
+    self.game = game
+    self.num_rows = game.num_rows
+    self.num_cols = game.num_cols
+
+    self.cell_width = self.size[0] // self.num_cols
+    self.cell_height = self.size[1] // self.num_rows
+
+    active_rect = Surface((self.cell_width, self.cell_height))
+    active_rect.fill((255, 0, 0))
+    inactive_rect = Surface((self.cell_width, self.cell_height))
+    inactive_rect.fill((128, 128, 128))
+    self.surface_by_class = {0: inactive_rect, 1: active_rect}
+
+  def draw(self):
     pass
